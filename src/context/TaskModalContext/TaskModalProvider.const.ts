@@ -1,10 +1,11 @@
 import { IssuePriority, IssueStatus } from "~/store/ProjectsStore";
 
 export const initialValues = {
-  assigneeId: 0,
+  id: undefined,
+  assigneeId: null,
   description: "",
   priority: IssuePriority.Low,
   status: IssueStatus.Backlog,
   title: "",
-  boardId: 0,
+  boardId: null,
 };

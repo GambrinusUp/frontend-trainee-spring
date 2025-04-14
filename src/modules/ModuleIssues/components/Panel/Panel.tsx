@@ -48,13 +48,13 @@ export const Panel = ({ form }: PanelProps) => {
           data={[
             { value: IssueStatus.Backlog, label: "Нужно сделать" },
             { value: IssueStatus.InProgress, label: "В процессе" },
-            { value: IssueStatus.Done, label: "Сделаны" },
+            { value: IssueStatus.Done, label: "Сделано" },
           ]}
           key={form.key("issueStatus")}
           {...form.getInputProps("issueStatus")}
         />
         <Select
-          placeholder="Выберите статус задачи"
+          placeholder="Выберите проект"
           data={selectArray}
           key={form.key("boardId")}
           {...form.getInputProps("boardId")}

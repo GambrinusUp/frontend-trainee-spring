@@ -1,19 +1,26 @@
-import { Stack, Table } from "@mantine/core";
+import { Stack, Table, Title } from "@mantine/core";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "~/hooks/redux";
-import { getBoardIssues, IssueStatus } from "~/store/ProjectsStore";
+
 import { IssueItem } from "./components";
+
+import { IssueStatusLabels } from "~/constants/names";
+import { useAppDispatch, useAppSelector } from "~/hooks/redux";
+import { getBoardIssues, getBoards, IssueStatus } from "~/store/ProjectsStore";
 
 export const ModuleBoard = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
-  const { issuesList } = useAppSelector((state) => state.projectsStore);
+  const { boardsList, issuesList } = useAppSelector(
+    (state) => state.projectsStore
+  );
+  const boardName = boardsList.find((board) => board.id === Number(id))?.name;
 
   useEffect(() => {
     if (id) {
       dispatch(getBoardIssues({ id: Number(id) }));
     }
+    dispatch(getBoards());
   }, [id]);
 
   const backlogIssues = issuesList.filter(
@@ -30,7 +37,9 @@ export const ModuleBoard = () => {
 
   return (
     <>
+      <Title order={3}>{boardName}</Title>
       <Table
+        mt="md"
         variant="vertical"
         layout="fixed"
         withTableBorder
@@ -44,9 +53,9 @@ export const ModuleBoard = () => {
       >
         <Table.Thead>
           <Table.Tr>
-            <Table.Th>{IssueStatus.Backlog}</Table.Th>
-            <Table.Th>{IssueStatus.InProgress}</Table.Th>
-            <Table.Th>{IssueStatus.Done}</Table.Th>
+            <Table.Th>{IssueStatusLabels[IssueStatus.Backlog]}</Table.Th>
+            <Table.Th>{IssueStatusLabels[IssueStatus.InProgress]}</Table.Th>
+            <Table.Th>{IssueStatusLabels[IssueStatus.Done]}</Table.Th>
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
@@ -56,10 +65,12 @@ export const ModuleBoard = () => {
                 {backlogIssues.map((issue) => (
                   <IssueItem
                     key={issue.id}
+                    id={issue.id}
                     title={issue.title}
+                    description={issue.description}
                     priority={issue.priority}
-                    userName={issue.assignee.fullName}
-                    userAvatar={issue.assignee.avatarUrl}
+                    status={issue.status}
+                    assignee={issue.assignee}
                   />
                 ))}
               </Stack>
@@ -69,10 +80,12 @@ export const ModuleBoard = () => {
                 {inProgressIssues.map((issue) => (
                   <IssueItem
                     key={issue.id}
+                    id={issue.id}
                     title={issue.title}
+                    description={issue.description}
                     priority={issue.priority}
-                    userName={issue.assignee.fullName}
-                    userAvatar={issue.assignee.avatarUrl}
+                    status={issue.status}
+                    assignee={issue.assignee}
                   />
                 ))}
               </Stack>
@@ -82,10 +95,12 @@ export const ModuleBoard = () => {
                 {doneIssues.map((issue) => (
                   <IssueItem
                     key={issue.id}
+                    id={issue.id}
                     title={issue.title}
+                    description={issue.description}
                     priority={issue.priority}
-                    userName={issue.assignee.fullName}
-                    userAvatar={issue.assignee.avatarUrl}
+                    status={issue.status}
+                    assignee={issue.assignee}
                   />
                 ))}
               </Stack>

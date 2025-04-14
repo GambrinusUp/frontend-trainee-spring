@@ -1,10 +1,13 @@
 import { IssuePriority, IssueStatus } from "~/store/ProjectsStore";
 
 export interface FormValues {
+  id?: number | undefined;
   title: string;
   description: string;
-  boardId: number;
+  boardId: string | null;
   priority: IssuePriority;
   status: IssueStatus;
-  assigneeId: number;
+  assigneeId: string | null;
+
+  isEdit: boolean;
 }

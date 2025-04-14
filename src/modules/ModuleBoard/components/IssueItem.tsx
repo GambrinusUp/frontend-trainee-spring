@@ -1,17 +1,44 @@
 import { Avatar, Badge, Card, Group, Stack, Text } from "@mantine/core";
 
-import { IssueItemProps } from "./IssueItem.types";
-
 import { priorityColors } from "~/constants/colors";
+import { IssuePriorityLabels } from "~/constants/names";
+import { useTaskModalModal } from "~/context/TaskModalContext";
+import { IssueInfo } from "~/store/ProjectsStore";
 
 export const IssueItem = ({
+  id,
   title,
+  description,
   priority,
-  userName,
-  userAvatar,
-}: IssueItemProps) => {
+  status,
+  assignee,
+}: IssueInfo) => {
+  const { form, open } = useTaskModalModal();
+
+  const handleOpen = () => {
+    form.setValues({
+      id,
+      title,
+      description,
+      priority,
+      status,
+      assigneeId: assignee.id.toString(),
+      isEdit: true,
+    });
+
+    open();
+  };
+
   return (
-    <Card withBorder radius="md" p="sm" mb="xs" shadow="sm">
+    <Card
+      withBorder
+      radius="md"
+      p="sm"
+      mb="xs"
+      shadow="sm"
+      style={{ cursor: "pointer" }}
+      onClick={handleOpen}
+    >
       <Stack gap="sm">
         <Text fw={600}>{title}</Text>
         <Group>
@@ -19,13 +46,13 @@ export const IssueItem = ({
             Приоритет:
           </Text>
           <Badge size="xs" color={priorityColors[priority]}>
-            {priority}
+            {IssuePriorityLabels[priority]}
           </Badge>
         </Group>
         <Group>
-          <Avatar src={userAvatar} alt={userName} size="sm" />
+          <Avatar src={assignee.avatarUrl} alt={assignee.fullName} size="sm" />
           <Text size="xs" c="dimmed">
-            {userName}
+            {assignee.fullName}
           </Text>
         </Group>
       </Stack>

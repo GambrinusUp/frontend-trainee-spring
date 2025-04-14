@@ -6,4 +6,5 @@ export interface TaskModalProps {
   opened: boolean;
   onClose: () => void;
   form: UseFormReturnType<FormValues>;
+  handleSubmit: () => Promise<void>;
 }

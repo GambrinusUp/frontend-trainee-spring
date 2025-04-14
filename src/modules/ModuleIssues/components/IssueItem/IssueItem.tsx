@@ -1,42 +1,71 @@
 import { Avatar, Badge, Card, Group, Stack, Text } from "@mantine/core";
 
-import { IssueItemProps } from "./IssueItem.types";
-
 import { priorityColors } from "~/constants/colors";
+import { IssuePriorityLabels, IssueStatusLabels } from "~/constants/names";
+import { useTaskModalModal } from "~/context/TaskModalContext";
+import { ExtendedIssueInfo } from "~/store/IssuesStore";
 
 export const IssueItem = ({
+  id,
   title,
   description,
   status,
   priority,
-  userAvatar,
-  userName,
+  assignee,
+  boardId,
   boardName,
-}: IssueItemProps) => {
+}: ExtendedIssueInfo) => {
+  const { form, open } = useTaskModalModal();
+
+  const handleEdit = () => {
+    form.setValues({
+      id,
+      title,
+      description,
+      boardId: boardId.toString(),
+      priority,
+      status,
+      assigneeId: assignee.id.toString(),
+      isEdit: true,
+    });
+
+    open();
+  };
+
   return (
-    <Card withBorder radius="xl" p="lg" shadow="sm" w="100%">
+    <Card
+      withBorder
+      radius="xl"
+      p="lg"
+      shadow="sm"
+      w="60%"
+      onClick={handleEdit}
+      style={{ cursor: "pointer" }}
+    >
       <Stack gap="sm">
         <Text fw={600}>{title}</Text>
         <Badge size="md">{boardName}</Badge>
-        <Text lineClamp={2}>{description}</Text>
+        <Text lineClamp={2} style={{ wordBreak: "break-all" }}>
+          {description}
+        </Text>
         <Group>
           <Text c="dimmed" size="xs">
             Приоритет:
           </Text>
           <Badge size="xs" color={priorityColors[priority]}>
-            {priority}
+            {IssuePriorityLabels[priority]}
           </Badge>
         </Group>
         <Group>
           <Text c="dimmed" size="xs">
             Статус:
           </Text>
-          <Badge size="xs">{status}</Badge>
+          <Badge size="xs">{IssueStatusLabels[status]}</Badge>
         </Group>
         <Group>
-          <Avatar src={userAvatar} alt={userName} size="sm" />
+          <Avatar src={assignee.avatarUrl} alt={assignee.fullName} size="sm" />
           <Text size="xs" c="dimmed">
-            {userName}
+            {assignee.fullName}
           </Text>
         </Group>
       </Stack>

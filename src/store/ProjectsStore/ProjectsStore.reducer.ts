@@ -1,9 +1,10 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { getBoardIssues, getBoards } from "./ProjectsStore.actions";
 import { PROJECTS_SLICE_NAME } from "./ProjectsStore.const";
 import { ProjectsState } from "./ProjectsStore.types";
 
+import { ExtendedIssueInfo } from "~/store/IssuesStore";
 import { LoadingState } from "~/store/types";
 
 const initialState: ProjectsState = {
@@ -16,7 +17,30 @@ const initialState: ProjectsState = {
 const projectsSlice = createSlice({
   name: PROJECTS_SLICE_NAME,
   initialState,
-  reducers: {},
+  reducers: {
+    getIssueInBoard: (
+      state,
+      action: PayloadAction<{ data: ExtendedIssueInfo }>
+    ) => {
+      const existingIssueIndex = state.issuesList.findIndex(
+        (issue) => issue.id === action.payload.data.id
+      );
+
+      if (existingIssueIndex !== -1) {
+        state.issuesList[existingIssueIndex] = {
+          ...state.issuesList[existingIssueIndex],
+          id: action.payload.data.id,
+          title: action.payload.data.title,
+          description: action.payload.data.description,
+          priority: action.payload.data.priority,
+          status: action.payload.data.status,
+          assignee: action.payload.data.assignee,
+        };
+      } else {
+        state.issuesList = [...state.issuesList, action.payload.data];
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getBoards.pending, (state) => {
@@ -49,3 +73,4 @@ const projectsSlice = createSlice({
 });
 
 export const projectsReducer = projectsSlice.reducer;
+export const { getIssueInBoard } = projectsSlice.actions;

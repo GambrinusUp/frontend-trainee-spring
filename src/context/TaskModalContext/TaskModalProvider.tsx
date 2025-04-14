@@ -7,12 +7,25 @@ import { TaskModal } from "~/components/TaskModal";
 
 export const TaskModalProvider = (props: React.PropsWithChildren) => {
   const [opened, { open, close }] = useDisclosure(false);
-  const { form } = useModalForm();
+  const { form, handleSubmit } = useModalForm(close);
+
+  const handleClose = () => {
+    close();
+    const savedData = JSON.parse(localStorage.getItem("issueDraft") || "{}");
+    form.setValues({ ...savedData, isEdit: false });
+  };
 
   return (
-    <TaskModalContext.Provider value={{ open }}>
+    <TaskModalContext.Provider value={{ open, form }}>
       {props.children}
-      <TaskModal opened={opened} onClose={close} form={form} />
+      {opened && (
+        <TaskModal
+          opened={opened}
+          onClose={handleClose}
+          form={form}
+          handleSubmit={handleSubmit}
+        />
+      )}
     </TaskModalContext.Provider>
   );
 };

@@ -35,7 +35,13 @@ export const ModuleBoards = () => {
     <Flex direction="column" align="center" gap="lg">
       <Stack w={{ base: "100%", sm: "60%" }} gap="md">
         {boardsList.map((board) => (
-          <BoardItem key={board.id} id={board.id} name={board.name} />
+          <BoardItem
+            key={board.id}
+            id={board.id}
+            name={board.name}
+            description={board.description}
+            taskCount={board.taskCount}
+          />
         ))}
       </Stack>
     </Flex>

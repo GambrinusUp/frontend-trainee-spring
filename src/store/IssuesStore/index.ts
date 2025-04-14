@@ -1,3 +1,9 @@
-export type { ExtendedIssueInfo, GetIssuesData } from "./IssuesStore.types";
+export type {
+  ExtendedIssueInfo,
+  GetIssuesData,
+  CreateIssueData,
+  GetIssueData,
+  UpdateIssueData,
+} from "./IssuesStore.types";
 export { issuesReducer } from "./IssuesStore.reducer";
-export { getIssues } from "./IssuesStore.actions";
+export { getIssues, createIssue, updateIssue } from "./IssuesStore.actions";
