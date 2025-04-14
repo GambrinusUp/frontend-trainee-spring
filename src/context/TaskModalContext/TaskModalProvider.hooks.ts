@@ -17,10 +17,10 @@ import { LoadingState } from "~/store/types";
 import { getUsers } from "~/store/UsersStore";
 import { debounce } from "~/utils/debounce";
 
+// Хук, который отвечает за управление формой и создание/редактирование задач
 export const useModalForm = (close: () => void) => {
   const isBoardPage = !!useMatch("/board/:id");
   const dispatch = useAppDispatch();
-  //const [isEdit, setIsEdit] = useState(false);
   const { loadingState } = useAppSelector((state) => state.usersStore);
   const { showSuccess } = useNotification();
 
@@ -35,6 +35,7 @@ export const useModalForm = (close: () => void) => {
 
   const savedData = JSON.parse(localStorage.getItem("issueDraft") || "{}");
 
+  // Форма с валидацией и сохранением данных в черновик
   const form = useForm<FormValues>({
     mode: "uncontrolled",
     initialValues: {
@@ -76,12 +77,14 @@ export const useModalForm = (close: () => void) => {
     },
   });
 
+  // Получение списка пользователей
   useEffect(() => {
     if (loadingState === LoadingState.IDLE) {
       dispatch(getUsers());
     }
   }, [dispatch]);
 
+  // Подтверждение создания или редактирования задачи
   const handleSubmit = async () => {
     form.validate();
 

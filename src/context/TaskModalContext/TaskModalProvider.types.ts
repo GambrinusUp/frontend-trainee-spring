@@ -1,5 +1,6 @@
 import { IssuePriority, IssueStatus } from "~/store/ProjectsStore";
 
+// Типы значений формы
 export interface FormValues {
   id?: number | undefined;
   title: string;

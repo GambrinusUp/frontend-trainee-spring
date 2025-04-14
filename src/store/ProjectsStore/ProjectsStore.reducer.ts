@@ -1,6 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { getBoardIssues, getBoards } from "./ProjectsStore.actions";
+import {
+  getBoardIssues,
+  getBoards,
+  updateIssueStatus,
+} from "./ProjectsStore.actions";
 import { PROJECTS_SLICE_NAME } from "./ProjectsStore.const";
 import { ProjectsState } from "./ProjectsStore.types";
 
@@ -8,8 +12,9 @@ import { ExtendedIssueInfo } from "~/store/IssuesStore";
 import { LoadingState } from "~/store/types";
 
 const initialState: ProjectsState = {
-  loadingState: LoadingState.IDLE,
+  boardsLoadingState: LoadingState.IDLE,
   boardsList: [],
+  issuesLoadingState: LoadingState.IDLE,
   issuesList: [],
   error: undefined,
 };
@@ -44,30 +49,54 @@ const projectsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getBoards.pending, (state) => {
-        state.loadingState = LoadingState.PENDING;
+        state.boardsLoadingState = LoadingState.PENDING;
         state.error = undefined;
       })
       .addCase(getBoards.fulfilled, (state, { payload }) => {
-        state.loadingState = LoadingState.FULFILLED;
+        state.boardsLoadingState = LoadingState.FULFILLED;
         state.boardsList = payload.data;
         state.error = undefined;
       })
       .addCase(getBoards.rejected, (state, { payload }) => {
         state.error = payload;
-        state.loadingState = LoadingState.REJECTED;
+        state.boardsLoadingState = LoadingState.REJECTED;
       })
       .addCase(getBoardIssues.pending, (state) => {
-        state.loadingState = LoadingState.PENDING;
+        state.issuesLoadingState = LoadingState.PENDING;
         state.error = undefined;
       })
       .addCase(getBoardIssues.fulfilled, (state, { payload }) => {
-        state.loadingState = LoadingState.FULFILLED;
+        state.issuesLoadingState = LoadingState.FULFILLED;
         state.issuesList = payload.data;
         state.error = undefined;
       })
       .addCase(getBoardIssues.rejected, (state, { payload }) => {
         state.error = payload;
-        state.loadingState = LoadingState.REJECTED;
+        state.issuesLoadingState = LoadingState.REJECTED;
+      })
+      .addCase(updateIssueStatus.pending, (state) => {
+        state.error = undefined;
+      })
+      .addCase(updateIssueStatus.fulfilled, (state, { meta }) => {
+        const issueId = Number(meta.arg.id);
+        const newStatus = meta.arg.newStatus;
+
+        const existingIssueIndex = state.issuesList.findIndex(
+          (issue) => issue.id === issueId
+        );
+
+        if (existingIssueIndex !== -1) {
+          state.issuesList[existingIssueIndex] = {
+            ...state.issuesList[existingIssueIndex],
+            status: newStatus,
+          };
+        }
+
+        state.error = undefined;
+      })
+      .addCase(updateIssueStatus.rejected, (state, { payload }) => {
+        state.error = payload;
+        state.issuesLoadingState = LoadingState.REJECTED;
       });
   },
 });

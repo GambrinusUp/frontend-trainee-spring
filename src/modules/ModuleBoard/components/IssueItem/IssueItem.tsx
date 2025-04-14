@@ -1,10 +1,12 @@
 import { Avatar, Badge, Card, Group, Stack, Text } from "@mantine/core";
+import { useMatch } from "react-router-dom";
 
 import { priorityColors } from "~/constants/colors";
 import { IssuePriorityLabels } from "~/constants/names";
-import { useTaskModalModal } from "~/context/TaskModalContext";
+import { useTaskModal } from "~/context/TaskModalContext";
 import { IssueInfo } from "~/store/ProjectsStore";
 
+// Компонент для отображения краткой информации о задачи
 export const IssueItem = ({
   id,
   title,
@@ -13,8 +15,10 @@ export const IssueItem = ({
   status,
   assignee,
 }: IssueInfo) => {
-  const { form, open } = useTaskModalModal();
+  const isBoardPage = useMatch("/board/:id");
+  const { form, open } = useTaskModal();
 
+  // Функция обработки открытия модального окна, для редактирования задачи. Поля предзаполняются данными задачи
   const handleOpen = () => {
     form.setValues({
       id,
@@ -25,6 +29,10 @@ export const IssueItem = ({
       assigneeId: assignee.id.toString(),
       isEdit: true,
     });
+
+    if (isBoardPage) {
+      form.setValues({ boardId: isBoardPage.params.id });
+    }
 
     open();
   };
@@ -40,7 +48,9 @@ export const IssueItem = ({
       onClick={handleOpen}
     >
       <Stack gap="sm">
-        <Text fw={600}>{title}</Text>
+        <Text fw={600} style={{ wordBreak: "break-all" }}>
+          {title}
+        </Text>
         <Group>
           <Text c="dimmed" size="xs">
             Приоритет:

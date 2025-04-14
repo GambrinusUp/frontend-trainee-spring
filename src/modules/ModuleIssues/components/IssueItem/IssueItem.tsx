@@ -2,9 +2,10 @@ import { Avatar, Badge, Card, Group, Stack, Text } from "@mantine/core";
 
 import { priorityColors } from "~/constants/colors";
 import { IssuePriorityLabels, IssueStatusLabels } from "~/constants/names";
-import { useTaskModalModal } from "~/context/TaskModalContext";
+import { useTaskModal } from "~/context/TaskModalContext";
 import { ExtendedIssueInfo } from "~/store/IssuesStore";
 
+// Компонент для отображения информации о задачи
 export const IssueItem = ({
   id,
   title,
@@ -15,8 +16,9 @@ export const IssueItem = ({
   boardId,
   boardName,
 }: ExtendedIssueInfo) => {
-  const { form, open } = useTaskModalModal();
+  const { form, open } = useTaskModal();
 
+  // Функция обработки открытия модального окна, для редактирования задачи. Поля предзаполняются данными задачи
   const handleEdit = () => {
     form.setValues({
       id,

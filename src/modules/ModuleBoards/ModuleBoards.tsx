@@ -8,22 +8,26 @@ import { useNotification } from "~/hooks/useNotification";
 import { getBoards } from "~/store/ProjectsStore";
 import { LoadingState } from "~/store/types";
 
+// Модуль для отображения всех досок
 export const ModuleBoards = () => {
   const dispatch = useAppDispatch();
-  const { boardsList, loadingState, error } = useAppSelector(
+  const { boardsList, boardsLoadingState, error } = useAppSelector(
     (state) => state.projectsStore
   );
   const { showError } = useNotification();
 
+  // Получение данных
   useEffect(() => {
     dispatch(getBoards());
   }, []);
 
+  // Показ ошибок
   useEffect(() => {
     if (error) showError(error);
   }, [error]);
 
-  if (loadingState === LoadingState.PENDING) {
+  // Отображения лоадера, если данные ещё не загружены
+  if (boardsLoadingState === LoadingState.PENDING) {
     return (
       <Flex justify="center" align="center">
         <Loader color="blue" size="xl" />

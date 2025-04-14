@@ -9,5 +9,5 @@ export interface FilterFormValues {
   name: string;
   searchType: SearchType;
   issueStatus?: IssueStatus;
-  boardId?: string;
+  boardIdFilter?: string;
 }

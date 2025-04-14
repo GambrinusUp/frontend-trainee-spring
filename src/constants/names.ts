@@ -1,5 +1,6 @@
 import { IssuePriority, IssueStatus } from "~/store/ProjectsStore";
 
+// Сопоставление значений приоритета и статуса задач с русскими названиями
 export const IssuePriorityLabels: { [key in IssuePriority]: string } = {
   [IssuePriority.Low]: "Низкий",
   [IssuePriority.Medium]: "Средний",

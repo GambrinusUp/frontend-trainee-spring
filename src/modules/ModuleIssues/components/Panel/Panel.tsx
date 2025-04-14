@@ -1,15 +1,17 @@
 import { CloseButton, Group, Input, Select } from "@mantine/core";
 import { Search } from "lucide-react";
 
+import { SearchOptions } from "./Panel.const";
 import { PanelProps } from "./Panel.types";
 
+import { StatusOptions } from "~/constants/options";
 import { useAppSelector } from "~/hooks/redux";
-import { SearchType } from "~/modules/ModuleIssues";
-import { IssueStatus } from "~/store/ProjectsStore";
 
+// Компонент панели для поиска и фильтрации задач
 export const Panel = ({ form }: PanelProps) => {
   const { boardsList } = useAppSelector((state) => state.projectsStore);
 
+  // Преобразование данных в опции для селекта выбора доски
   const selectArray = boardsList.map((item) => ({
     value: item.id.toString(),
     label: item.name,
@@ -34,10 +36,7 @@ export const Panel = ({ form }: PanelProps) => {
         />
         <Select
           allowDeselect={false}
-          data={[
-            { value: SearchType.ByName, label: "По названию" },
-            { value: SearchType.ByAssignee, label: "По исполнителю" },
-          ]}
+          data={SearchOptions}
           key={form.key("searchType")}
           {...form.getInputProps("searchType")}
         />
@@ -45,19 +44,15 @@ export const Panel = ({ form }: PanelProps) => {
       <Group>
         <Select
           placeholder="Выберите статус задачи"
-          data={[
-            { value: IssueStatus.Backlog, label: "Нужно сделать" },
-            { value: IssueStatus.InProgress, label: "В процессе" },
-            { value: IssueStatus.Done, label: "Сделано" },
-          ]}
+          data={StatusOptions}
           key={form.key("issueStatus")}
           {...form.getInputProps("issueStatus")}
         />
         <Select
           placeholder="Выберите проект"
           data={selectArray}
-          key={form.key("boardId")}
-          {...form.getInputProps("boardId")}
+          key={form.key("boardIdFilter")}
+          {...form.getInputProps("boardIdFilter")}
         />
       </Group>
     </Group>

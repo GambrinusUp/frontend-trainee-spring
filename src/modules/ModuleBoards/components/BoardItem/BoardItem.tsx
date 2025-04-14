@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom";
 
 import { BoardInfo } from "~/store/ProjectsStore/ProjectsStore.types";
 
+// Компонент для отображения информации о доске
 export const BoardItem = ({ id, name, description, taskCount }: BoardInfo) => {
   const navigate = useNavigate();
 
+  // Обработка перехода на определенную доску
   const handleNavigate = () => {
     navigate(`/board/${id}`);
   };

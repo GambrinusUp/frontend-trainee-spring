@@ -8,12 +8,16 @@ import { ExtendedIssueInfo, getIssues } from "~/store/IssuesStore";
 import { getBoards } from "~/store/ProjectsStore";
 import { debounce } from "~/utils/debounce";
 
+// Хук для управления формой поиска
 export const useFilterForm = () => {
   const dispatch = useAppDispatch();
-  const { issuesList } = useAppSelector((state) => state.issuesStore);
+  const { issuesList, loadingState, error } = useAppSelector(
+    (state) => state.issuesStore
+  );
   const [filteredIssues, setFilteredIssues] =
     useState<ExtendedIssueInfo[]>(issuesList);
 
+  // Поиск с дебаунсом
   const debouncedSearch = useMemo(
     () =>
       debounce((values: FilterFormValues) => {
@@ -37,9 +41,9 @@ export const useFilterForm = () => {
         }
 
         // Фильтрация по доске
-        if (values.boardId) {
+        if (values.boardIdFilter) {
           result = result.filter(
-            (issue) => issue.boardId.toString() === values.boardId
+            (issue) => issue.boardId.toString() === values.boardIdFilter
           );
         }
 
@@ -48,19 +52,21 @@ export const useFilterForm = () => {
     [issuesList]
   );
 
+  // Форма
   const form = useForm<FilterFormValues>({
     mode: "uncontrolled",
     initialValues: {
       name: "",
       searchType: SearchType.ByName,
       issueStatus: undefined,
-      boardId: undefined,
+      boardIdFilter: undefined,
     },
     onValuesChange: (values) => {
       debouncedSearch(values);
     },
   });
 
+  // Получение данных
   useEffect(() => {
     dispatch(getBoards());
     dispatch(getIssues());
@@ -70,5 +76,5 @@ export const useFilterForm = () => {
     setFilteredIssues(issuesList);
   }, [issuesList]);
 
-  return { form, filteredIssues };
+  return { form, filteredIssues, loadingState, error };
 };

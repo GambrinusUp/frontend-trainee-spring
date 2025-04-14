@@ -3,21 +3,28 @@ import {
   Card,
   Flex,
   Group,
+  Loader,
   ScrollArea,
   Stack,
   Text,
 } from "@mantine/core";
+import { useEffect } from "react";
 
 import { IssueItem } from "./components/IssueItem";
 import { Panel } from "./components/Panel";
 import { useFilterForm } from "./ModuleIssues.hooks";
 
-import { useTaskModalModal } from "~/context/TaskModalContext";
+import { useTaskModal } from "~/context/TaskModalContext";
+import { useNotification } from "~/hooks/useNotification";
+import { LoadingState } from "~/store/types";
 
+// Модуль для просмотра всех задач
 export const ModuleIssues = () => {
-  const { form, filteredIssues } = useFilterForm();
-  const { open } = useTaskModalModal();
+  const { form, filteredIssues, loadingState, error } = useFilterForm();
+  const { open } = useTaskModal();
+  const { showError } = useNotification();
 
+  // Обработка открытия модального окна
   const handleOpenModal = () => {
     form.setValues({
       ...JSON.parse(localStorage.getItem("issueDraft") || "{}"),
@@ -25,6 +32,20 @@ export const ModuleIssues = () => {
 
     open();
   };
+
+  // Показ ошибок
+  useEffect(() => {
+    if (error) showError(error);
+  }, [error]);
+
+  // Отображения лоадера, если данные ещё не загружены
+  if (loadingState === LoadingState.PENDING) {
+    return (
+      <Flex justify="center" align="center">
+        <Loader color="blue" size="xl" />
+      </Flex>
+    );
+  }
 
   return (
     <Flex

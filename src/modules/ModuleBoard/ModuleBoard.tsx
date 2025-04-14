@@ -1,21 +1,40 @@
-import { Stack, Table, Title } from "@mantine/core";
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import { Flex, Loader, Table, Title } from "@mantine/core";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-import { IssueItem } from "./components";
+import { Column } from "./components/Column";
 
 import { IssueStatusLabels } from "~/constants/names";
 import { useAppDispatch, useAppSelector } from "~/hooks/redux";
-import { getBoardIssues, getBoards, IssueStatus } from "~/store/ProjectsStore";
+import { useNotification } from "~/hooks/useNotification";
+import {
+  updateIssueStatus,
+  getBoardIssues,
+  getBoards,
+  IssueStatus,
+} from "~/store/ProjectsStore";
+import { LoadingState } from "~/store/types";
 
+// Модуль доски, для отображения задач, их редактирования и изменения статуса
 export const ModuleBoard = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
-  const { boardsList, issuesList } = useAppSelector(
+  const { boardsList, issuesList, issuesLoadingState, error } = useAppSelector(
     (state) => state.projectsStore
   );
+  const { showError } = useNotification();
+
   const boardName = boardsList.find((board) => board.id === Number(id))?.name;
 
+  // Получение данных
   useEffect(() => {
     if (id) {
       dispatch(getBoardIssues({ id: Number(id) }));
@@ -23,6 +42,7 @@ export const ModuleBoard = () => {
     dispatch(getBoards());
   }, [id]);
 
+  // Фильтрация задач по их статусу
   const backlogIssues = issuesList.filter(
     (issue) => issue.status === IssueStatus.Backlog
   );
@@ -35,8 +55,47 @@ export const ModuleBoard = () => {
     (issue) => issue.status === IssueStatus.Done
   );
 
+  // Настройка сенсоров
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 5 },
+    })
+  );
+
+  // Функция, которая вызывается при завершении перетаскивания и изменяет статус задачи
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      dispatch(
+        updateIssueStatus({
+          id: active.id.toString(),
+          newStatus: over.id as IssueStatus,
+        })
+      );
+    }
+  };
+
+  // Показ ошибок
+  useEffect(() => {
+    if (error) showError(error);
+  }, [error]);
+
+  // Отображения лоадера, если данные ещё не загружены
+  if (issuesLoadingState === LoadingState.PENDING) {
+    return (
+      <Flex justify="center" align="center">
+        <Loader color="blue" size="xl" />
+      </Flex>
+    );
+  }
+
   return (
-    <>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragEnd={handleDragEnd}
+    >
       <Title order={3}>{boardName}</Title>
       <Table
         mt="md"
@@ -45,11 +104,7 @@ export const ModuleBoard = () => {
         withTableBorder
         withColumnBorders
         withRowBorders
-        styles={{
-          td: {
-            verticalAlign: "top",
-          },
-        }}
+        styles={{ td: { verticalAlign: "top" } }}
       >
         <Table.Thead>
           <Table.Tr>
@@ -61,53 +116,20 @@ export const ModuleBoard = () => {
         <Table.Tbody>
           <Table.Tr>
             <Table.Td>
-              <Stack gap="xs">
-                {backlogIssues.map((issue) => (
-                  <IssueItem
-                    key={issue.id}
-                    id={issue.id}
-                    title={issue.title}
-                    description={issue.description}
-                    priority={issue.priority}
-                    status={issue.status}
-                    assignee={issue.assignee}
-                  />
-                ))}
-              </Stack>
+              <Column status={IssueStatus.Backlog} issues={backlogIssues} />
             </Table.Td>
             <Table.Td>
-              <Stack gap="xs">
-                {inProgressIssues.map((issue) => (
-                  <IssueItem
-                    key={issue.id}
-                    id={issue.id}
-                    title={issue.title}
-                    description={issue.description}
-                    priority={issue.priority}
-                    status={issue.status}
-                    assignee={issue.assignee}
-                  />
-                ))}
-              </Stack>
+              <Column
+                status={IssueStatus.InProgress}
+                issues={inProgressIssues}
+              />
             </Table.Td>
             <Table.Td>
-              <Stack gap="xs">
-                {doneIssues.map((issue) => (
-                  <IssueItem
-                    key={issue.id}
-                    id={issue.id}
-                    title={issue.title}
-                    description={issue.description}
-                    priority={issue.priority}
-                    status={issue.status}
-                    assignee={issue.assignee}
-                  />
-                ))}
-              </Stack>
+              <Column status={IssueStatus.Done} issues={doneIssues} />
             </Table.Td>
           </Table.Tr>
         </Table.Tbody>
       </Table>
-    </>
+    </DndContext>
   );
 };

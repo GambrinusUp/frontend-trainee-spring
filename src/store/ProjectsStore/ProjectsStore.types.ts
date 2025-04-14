@@ -44,8 +44,13 @@ export interface GetBoardIssuesData {
 }
 
 export interface ProjectsState {
-  loadingState: LoadingState;
+  boardsLoadingState: LoadingState;
+  issuesLoadingState: LoadingState;
   boardsList: BoardInfo[];
   issuesList: IssueInfo[];
   error?: string;
+}
+
+export interface UpdateIssueStatus {
+  status: IssueStatus;
 }

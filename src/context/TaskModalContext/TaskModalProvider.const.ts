@@ -1,5 +1,6 @@
 import { IssuePriority, IssueStatus } from "~/store/ProjectsStore";
 
+// Начальные значения для формы
 export const initialValues = {
   id: undefined,
   assigneeId: null,

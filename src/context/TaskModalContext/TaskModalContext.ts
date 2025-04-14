@@ -3,6 +3,7 @@ import { createContext } from "react";
 
 import { FormValues } from "./TaskModalProvider.types";
 
+// Создание контекста модального окна
 export const TaskModalContext = createContext<
   | {
       open: () => void;
