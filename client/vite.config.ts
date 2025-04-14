@@ -10,4 +10,14 @@ export default defineConfig({
     },
   },
   plugins: [react()],
+  preview: {
+    port: 8081,
+    strictPort: true,
+  },
+  server: {
+    port: 8081,
+    strictPort: true,
+    host: true,
+    origin: "http://localhost:8081",
+  },
 });

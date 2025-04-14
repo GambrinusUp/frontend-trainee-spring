@@ -13,6 +13,7 @@ import { TaskModalProvider } from "./context/TaskModalContext";
 import { ModuleBoard } from "./modules/ModuleBoard";
 import { ModuleBoards } from "./modules/ModuleBoards";
 import { ModuleIssues } from "./modules/ModuleIssues";
+import { NotFound } from "./modules/NotFound";
 
 const App = () => {
   const [opened, { toggle }] = useDisclosure();
@@ -38,6 +39,7 @@ const App = () => {
                 <Route path="/boards" element={<ModuleBoards />} />
                 <Route path="/board/:id" element={<ModuleBoard />} />
                 <Route path="/issues" element={<ModuleIssues />} />
+                <Route path="/*" element={<NotFound />} />
               </Routes>
             </AppShell.Main>
           </AppShell>

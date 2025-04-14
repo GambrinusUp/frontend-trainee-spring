@@ -1,4 +1,4 @@
-import { IssueInfo, IssueStatus } from "~/store/ProjectsStore";
+import { IssueInfo } from "~/store/ProjectsStore";
 import { LoadingState } from "~/store/types";
 
 export interface ExtendedIssueInfo extends IssueInfo {
