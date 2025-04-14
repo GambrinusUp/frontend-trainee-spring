@@ -78,7 +78,7 @@ export const ModuleIssues = () => {
             )}
           </Stack>
         </ScrollArea.Autosize>
-        <Group justify="flex-end">
+        <Group justify="flex-end" pt="md">
           <Button
             variant="filled"
             size="md"
