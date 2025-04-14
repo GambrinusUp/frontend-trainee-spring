@@ -30,7 +30,7 @@ export const ModuleBoard = () => {
   const { boardsList, issuesList, issuesLoadingState, error } = useAppSelector(
     (state) => state.projectsStore
   );
-  const { showError } = useNotification();
+  const { showSuccess, showError } = useNotification();
 
   const boardName = boardsList.find((board) => board.id === Number(id))?.name;
 
@@ -63,16 +63,20 @@ export const ModuleBoard = () => {
   );
 
   // Функция, которая вызывается при завершении перетаскивания и изменяет статус задачи
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      dispatch(
+      const result = await dispatch(
         updateIssueStatus({
           id: active.id.toString(),
           newStatus: over.id as IssueStatus,
         })
       );
+
+      if (result.meta.requestStatus === "fulfilled") {
+        showSuccess("Статус задачи успешно обновлен");
+      }
     }
   };
 
