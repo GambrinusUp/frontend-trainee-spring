@@ -23,11 +23,11 @@ npm run test
 ## Инструкция по запуску:
 1. Склонируйте репозиторий
 ```
-git clone https://github.com/GambrinusUp/seller-personal-account.git
+git clone https://github.com/GambrinusUp/frontend-trainee-spring.git
 ```
 2. Перейдите в репозиторий
 ```
-cd frontend-trainee-winter
+cd frontend-trainee-spring
 ```
 3. Запустите контейнер:
 ```
