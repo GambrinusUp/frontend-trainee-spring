@@ -1,4 +1,4 @@
-# Мини-версию системы управления проектами (Project Management Systems)
+# Мини-версия системы управления проектами (Project Management Systems)
 ## Функционал:
 - **Просмотр всех задач:** отображение всех созданных задач
 - **Просмотр досок**:  отображение всех досок
@@ -71,6 +71,7 @@ http://localhost:8081/issues
       - IssuesStore.const - константы
       - IssuesStore.types - типы данных
       - IssuesStore.reducer - редьюсер
+      - index - экспорты
     - ...
     - store.ts - корневой store, объединяющий все reducer
   - test/ - тесты
