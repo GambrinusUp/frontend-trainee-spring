@@ -73,7 +73,8 @@ http://localhost:8081/issues
       - IssuesStore.reducer - редьюсер
       - index - экспорты
     - ...
-    - store.ts - корневой store, объединяющий все reducer
+    - index - корневой store, объединяющий все reducer
+    - types - общие типы (например, LoadingState)
   - test/ - тесты
   - utils/ - вспомогательные функции
 
